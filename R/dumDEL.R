@@ -16,9 +16,11 @@
 #' @importFrom stringr str_replace_all str_remove
 dumDEL <- function(x){
   data <- x
+  Weekdays <- weekdays(x=data$Date,abbreviate=TRUE)
   print("Data Date:")
   print(data$Date[1])
-  data$Date <- format(data$Date,"%m/%d")
+  data <- data.frame(data,Weekday=Weekdays)
+  
   allF = data[c(which(data$Truth=="False")),]
   netF = sum(abs(allF$delta))
   
@@ -43,7 +45,7 @@ dumDEL <- function(x){
   
   ## Delete above
   if(length(cols) <= 20){
-    last <- cols[length(cols)-3]
+    last <- cols[length(cols)-4]
   } else {
     cols[18] -> last
   }
@@ -74,7 +76,8 @@ dumDEL <- function(x){
   print(NetProfit)
   print("                                                     ")
   
-  
+  allF$Date <- format(allF$Date,"%m/%d")
+  allT$Date <- format(allT$Date,"%m/%d")
   output <- list(False=data.frame(Date=allF$Date,
                                   Symbol=allF$Symbol,
                                   Prior=round(allF$Pre,1),
@@ -85,7 +88,8 @@ dumDEL <- function(x){
                                   Net=round(netF,1),
                                   Truth=allF$Truth,
                                   Dir=allF$Direction,
-                                  EndDate=clast),
+                                  EndDate=clast,
+                                  Weekday=allF$Weekday),
                  True=data.frame(Date=allT$Date,
                                  Symbol=allT$Symbol,
                                  Prior=round(allT$Pre,1),
@@ -96,9 +100,11 @@ dumDEL <- function(x){
                                  Net=round(netT,1),
                                  Truth=allT$Truth,
                                  Dir=allT$Direction,
-                                 EndDate=clast))
+                                 EndDate=clast,
+                                 Weekday=allT$Weekday))
   output$False <- data.frame(output$False,type=ifelse(output$False$Change>0,"put","call"))
   output$True <- data.frame(output$True,type=ifelse(output$True$Change>0,"put","call"))
   out2 <- rbind(output$False,output$True)
+
   return(out2)
 }
