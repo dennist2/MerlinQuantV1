@@ -76,8 +76,8 @@ historicalVI <- function(file){
     
     data[good,] -> original
     if(exists("checkSymbols")==TRUE){
-      symbols <- checkSymbols(sym2[good])
-      symbols <- as.character(validSym$symbols)  
+      Symbols <- checkSymbols(sym2[good])
+      symbols <- as.character(Symbols$symbols)  
       
     } else {
       symbols <- sym2[good]
